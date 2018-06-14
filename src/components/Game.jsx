@@ -16,6 +16,7 @@ class Game extends React.Component {
     this.initBoard();
   }
 
+  //Initial new board
   initBoard() {
     let row = 6;
     let column = 7;
@@ -30,26 +31,36 @@ class Game extends React.Component {
     this.placePiece(column);
   }
 
+  //Toggle turns between two players
+  toggleTurn() {
+    let newTurn = this.state.turn;
+
+    if (newTurn === 1) newTurn = 2;
+    else if (newTurn === 2) newTurn = 1;
+
+    this.setState({
+      turn: newTurn
+    });
+  }
+
+  //Place piece onto board base on column
   placePiece(column) {
     let newBoard = this.state.board;
     let newTurn = this.state.turn;
+
     for (let i=newBoard.length - 1; i>=0; i--) {
       if (newBoard[i][column] === 0) {
         newBoard[i][column] = this.state.turn;
         break;
       }
       if (i === 0) {
-        if (newTurn === 1) newTurn = 2;
-        else if (newTurn === 2) newTurn = 1;
+        this.toggleTurn();
       }
     }
 
-    if (newTurn === 1) newTurn = 2;
-    else if (newTurn === 2) newTurn = 1;
-
+    this.toggleTurn();
     this.setState({
-      board: newBoard,
-      turn: newTurn
+      board: newBoard
     });
   }
 
