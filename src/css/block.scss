@@ -1,0 +1,21 @@
+.block {
+  border: 1px solid blue;
+  background-color: blue;
+  flex: 1 1 auto;
+}
+
+.circle {
+  width: 90%;
+  height: 90%;
+  border: 2px solid darkblue;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.firstPlayer {
+  background-color: yellow;
+}
+
+.secondPlayer {
+  background-color: red;
+}
