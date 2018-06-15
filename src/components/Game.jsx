@@ -2,13 +2,16 @@ import React from 'react';
 
 import Board from './Board';
 
+import '../css/main.scss';
+
 class Game extends React.Component {
   constructor() {
     super();
     this.state = {
-      loading: true,
+      status: 'loading',
       board: [],
-      turn: 1
+      turn: 0,
+      message: ''
     };
   }
 
@@ -22,8 +25,10 @@ class Game extends React.Component {
     let column = 7;
     let board = Array(row).fill().map(() => Array(column).fill(0));
     this.setState({
-      loading: false,
-      board: board
+      status: 'playing',
+      board: board,
+      turn: 1,
+      message: 'Click on the board to start the game!'
     });
   }
 
@@ -31,15 +36,28 @@ class Game extends React.Component {
     this.placePiece(column);
   }
 
+  handleGameEndClick() {
+    this.setState({
+      message: 'Game already over, please press restart to start a new game!'
+    });
+  }
+
   //Toggle turns between two players
   toggleTurn() {
     let newTurn = this.state.turn;
+    let message = '';
 
-    if (newTurn === 1) newTurn = 2;
-    else if (newTurn === 2) newTurn = 1;
+    if (newTurn === 1) {
+      newTurn = 2;
+      message = `It's player red's turn`;
+    } else if (newTurn === 2) {
+      newTurn = 1;
+      message = `It's player yellow's turn`;
+    }
 
     this.setState({
-      turn: newTurn
+      turn: newTurn,
+      message: message
     });
   }
 
@@ -47,32 +65,140 @@ class Game extends React.Component {
   placePiece(column) {
     let newBoard = this.state.board;
     let newTurn = this.state.turn;
+    let location = [];
 
-    for (let i=newBoard.length - 1; i>=0; i--) {
-      if (newBoard[i][column] === 0) {
-        newBoard[i][column] = this.state.turn;
+    for (let row=newBoard.length-1; row>=0; row--) {
+      if (newBoard[row][column] === 0) {
+        newBoard[row][column] = this.state.turn;
+        location = [row, column];
         break;
       }
-      if (i === 0) {
+      if (row === 0) {
         this.toggleTurn();
       }
     }
+    if (this.check(location)) {
+      // console.log('win!');
+      let message = '';
+      if (newTurn === 1) {
+        message = `Player yellow wins!`;
+      } else if (newTurn === 2) {
+        message = `Player red wins!`;
+      }
+      this.setState({
+        status: 'end',
+        message: message
+      });
+    } else {
+      this.toggleTurn();
+      this.setState({
+        board: newBoard
+      });
+    }
+  }
 
-    this.toggleTurn();
-    this.setState({
-      board: newBoard
-    });
+  //Check if win game
+  check(location) {
+    return (this.checkRow(location) || this.checkColumn(location) || this.checkDiagonal(location));
+  }
+
+  //Check row condition
+  checkRow(location) {
+    let board = this.state.board;
+    let turn = this.state.turn;
+    let count = 0;
+    for (let i=location[1]+1; i<board[0].length; i++) {
+      if (board[location[0]][i] === this.state.turn) count += 1;
+      else break;
+    }
+    for (let i=location[1]-1; i>=0; i--) {
+      if (board[location[0]][i] === this.state.turn) count += 1;
+      else break;
+    }
+
+    if (count >= 3) return true;
+    else return false;
+  }
+
+  //Check column condition
+  checkColumn(location) {
+    let board = this.state.board;
+    let turn = this.state.turn;
+    let count = 0;
+
+    for (let i=location[0]+1; i<board.length; i++) {
+      if (board[i][location[1]] === this.state.turn) count += 1;
+      else break;
+    }
+    for (let i=location[0]-1; i>=0; i--) {
+      if (board[i][location[1]] === this.state.turn) count += 1;
+      else break;
+    }
+
+    if (count >= 3) return true;
+    else return false;
+  }
+
+  //Check diagonal condition
+  checkDiagonal(location) {
+    let board = this.state.board;
+    let turn = this.state.turn;
+    let count = 0;
+
+    for (let i=location[1]+1, j=location[0]-1; i<board[0].length && j>=0; i++, j--) {
+      if (board[j][i] === this.state.turn) count += 1;
+      else break;
+    }
+    for (let i=location[1]-1, j=location[0]+1; i>=0 && j<board.length ; i--, j++) {
+      if (board[j][i] === this.state.turn) count += 1;
+      else break;
+    }
+
+    if (count >= 3) return true;
+    else count = 0;
+
+    for (let i=location[1]+1, j=location[0]+1; i<board[0].length && j<board.length; i++, j++) {
+      if (board[j][i] === this.state.turn) count += 1;
+      else break;
+    }
+    for (let i=location[1]-1, j=location[0]-1; i>=0 && j>=0 ; i--, j--) {
+      if (board[j][i] === this.state.turn) count += 1;
+      else break;
+    }
+
+    if (count >= 3) return true;
+    else return false;
+  }
+
+  restart() {
+    this.initBoard();
   }
 
   render() {
-    const isLoading = this.state.loading;
-    return (
-      <div>
-        {isLoading ?
-          (<div>Game Loading</div>) : (<Board board={this.state.board} handleClick={this.handleClick.bind(this)}/>)
-        }
-      </div>
-    );
+    const status = this.state.status;
+    if (status === 'loading') return (<div>Game Loading</div>);
+    if (status === 'playing') {
+      return (
+        <div className="main">
+          <Board board={this.state.board} handleClick={this.handleClick.bind(this)}/>
+          <div className="status">
+            <button onClick={this.restart.bind(this)}>restart</button>
+            <p className="message">{this.state.message}</p>
+          </div>
+        </div>
+      );
+    }
+    if (status === 'end') {
+      return (
+        <div className="main">
+          <Board board={this.state.board} handleClick={this.handleGameEndClick.bind(this)}/>
+          <div className="status">
+            <button onClick={this.restart.bind(this)}>restart</button>
+            <p className="message">{this.state.message}</p>
+          </div>
+        </div>
+      );
+    }
   }
 };
 
