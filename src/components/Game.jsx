@@ -36,6 +36,32 @@ class Game extends React.Component {
     this.placePiece(column);
   }
 
+  handleOnMouseEnter(column) {
+    let newBoard = this.state.board;
+    for (let row=newBoard.length-1; row>=0; row--) {
+      if (newBoard[row][column] === 0) {
+        newBoard[row][column] = 3;
+        break;
+      }
+    }
+    this.setState({
+      board: newBoard
+    });
+  }
+
+  handleOnMouseLeave(column) {
+    let newBoard = this.state.board;
+    for (let row=newBoard.length-1; row>=0; row--) {
+      if (newBoard[row][column] === 3) {
+        newBoard[row][column] = 0;
+        break;
+      }
+    }
+    this.setState({
+      board: newBoard
+    });
+  }
+
   handleGameEndClick() {
     this.setState({
       message: 'Game already over, please press restart to start a new game!'
@@ -68,7 +94,7 @@ class Game extends React.Component {
     let location = [];
 
     for (let row=newBoard.length-1; row>=0; row--) {
-      if (newBoard[row][column] === 0) {
+      if (newBoard[row][column] === 3) {
         newBoard[row][column] = this.state.turn;
         location = [row, column];
         break;
@@ -180,7 +206,11 @@ class Game extends React.Component {
     if (status === 'playing') {
       return (
         <div className="main">
-          <Board board={this.state.board} handleClick={this.handleClick.bind(this)}/>
+          <Board
+            board={this.state.board}
+            handleClick={this.handleClick.bind(this)}
+            handleOnMouseEnter={this.handleOnMouseEnter.bind(this)}
+            handleOnMouseLeave={this.handleOnMouseLeave.bind(this)}/>
           <div className="status">
             <button onClick={this.restart.bind(this)}>restart</button>
             <p className="message">{this.state.message}</p>
@@ -191,7 +221,10 @@ class Game extends React.Component {
     if (status === 'end') {
       return (
         <div className="main">
-          <Board board={this.state.board} handleClick={this.handleGameEndClick.bind(this)}/>
+          <Board board={this.state.board}
+            handleClick={this.handleGameEndClick.bind(this)}
+            handleOnMouseEnter={this.handleGameEndClick.bind(this)}
+            handleOnMouseLeave={this.handleGameEndClick.bind(this)}/>
           <div className="status">
             <button onClick={this.restart.bind(this)}>restart</button>
             <p className="message">{this.state.message}</p>

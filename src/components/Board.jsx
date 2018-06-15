@@ -10,7 +10,7 @@ const Board = (props) => {
         return (
           <div className="row" key={x}>
             {array.map(function(item, y) {
-              return (<Block key={y} row={x} column={y} value={item} handleClick={props.handleClick}/>);
+              return (<Block key={y} row={x} column={y} value={item} handleClick={props.handleClick} handleOnMouseEnter={props.handleOnMouseEnter} handleOnMouseLeave={props.handleOnMouseLeave}/>);
             })}
           </div>
         );
