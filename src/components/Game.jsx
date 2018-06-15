@@ -118,7 +118,11 @@ class Game extends React.Component {
             board: newBoard
           });
         }
+        if (row === 0) {
+          this.checkTie();
+        }
         break;
+
       }
     }
   }
@@ -194,6 +198,22 @@ class Game extends React.Component {
 
     if (count >= 3) return true;
     else return false;
+  }
+
+  //Check if tie Game
+  checkTie() {
+    let board = this.state.board;
+    let count = 0;
+    for (var i = 0; i < board[0].length; i++) {
+      if (board[0][i] !== 0) {
+        count += 1;
+      }
+    }
+    if (count === board[0].length) {
+      this.setState({
+        message: `It's a tie game, please restart!`
+      });
+    }
   }
 
   restart() {
