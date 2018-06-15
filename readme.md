@@ -3,6 +3,8 @@ Connect 4
 
 This is a simple Connect 4 game created using React framework
 
+![ScreenShot](https://raw.github.com/openmichael/connect4/master/screenshot/main.png)
+
 ## Getting Started
 The following instructions will get you to run the project on your local machine for development and testing purposes
 
@@ -25,5 +27,7 @@ Open a new terminal window and run server
 $ npm run server-dev
 ```
 When the server is up, it should show "Server listening on port 3000..."
+
 Open up your browser and go to "http://127.0.0.1:3000"
+
 You will see the connect 4 game showing on your browser
