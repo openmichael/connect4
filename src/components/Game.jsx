@@ -11,7 +11,8 @@ class Game extends React.Component {
       status: 'loading',
       board: [],
       turn: 0,
-      message: ''
+      message: '',
+      winMessage: ''
     };
   }
 
@@ -64,7 +65,7 @@ class Game extends React.Component {
 
   handleGameEndClick() {
     this.setState({
-      message: 'Game already over, please press restart to start a new game!'
+      winMessage: 'Game over, please restart a new game!'
     });
   }
 
@@ -228,6 +229,7 @@ class Game extends React.Component {
           <div className="status">
             <button onClick={this.restart.bind(this)}>restart</button>
             <p className="message">{this.state.message}</p>
+            <p className="message">{this.state.winMessage}</p>
           </div>
         </div>
       );

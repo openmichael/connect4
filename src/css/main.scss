@@ -2,10 +2,6 @@
   display: flex;
 }
 
-.status {
-  margin: 50px;
-}
-
 .status * {
   margin: 50px;
 }
@@ -13,6 +9,7 @@
 .message {
   width: 95%;
   height: auto;
+  font-size: 25px;
 }
 
 button {
