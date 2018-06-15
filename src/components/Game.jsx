@@ -35,6 +35,8 @@ class Game extends React.Component {
 
   handleClick(column) {
     this.placePiece(column);
+    this.handleOnMouseLeave(column);
+    this.handleOnMouseEnter(column);
   }
 
   handleOnMouseEnter(column) {
@@ -98,29 +100,26 @@ class Game extends React.Component {
       if (newBoard[row][column] === 3) {
         newBoard[row][column] = this.state.turn;
         location = [row, column];
+        if (this.check(location)) {
+          // console.log('win!');
+          let message = '';
+          if (newTurn === 1) {
+            message = `Player yellow wins!`;
+          } else if (newTurn === 2) {
+            message = `Player red wins!`;
+          }
+          this.setState({
+            status: 'end',
+            message: message
+          });
+        } else {
+          this.toggleTurn();
+          this.setState({
+            board: newBoard
+          });
+        }
         break;
       }
-      if (row === 0) {
-        this.toggleTurn();
-      }
-    }
-    if (this.check(location)) {
-      // console.log('win!');
-      let message = '';
-      if (newTurn === 1) {
-        message = `Player yellow wins!`;
-      } else if (newTurn === 2) {
-        message = `Player red wins!`;
-      }
-      this.setState({
-        status: 'end',
-        message: message
-      });
-    } else {
-      this.toggleTurn();
-      this.setState({
-        board: newBoard
-      });
     }
   }
 
